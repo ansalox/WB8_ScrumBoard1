@@ -3,6 +3,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 // modulos
 const User = require("./routes/user");
+const Auth = require("./routes/auth");
+const Board = require("./routes/board");
 
 // creamos la variable principal que ejecutara nuestra aplicacion
 const app = express();
@@ -10,6 +12,9 @@ const app = express();
 app.use(express.json());
 // modulos
 app.use("/api/user/", User);
+app.use("/api/auth/", Auth);
+app.use("/api/board/", Board);
+
 
 // creamos variable del puerto sea de hosting o local
 const port = process.env.PORT || 3001;
