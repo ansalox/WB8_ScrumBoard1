@@ -24,5 +24,38 @@ router.post("/saveTask", Auth, async (req, res) => {
   return res.status(200).send({ result });
 });
 
+// consultar todas las actividades
+router.get("/listTask", Auth, async (req, res) => {
+  const user = await User.findById(req.user._id);
+  if (!user) return res.status(401).send("La persona no existe en BD");
+  const board = await Board.find({ userId: req.user._id });
+  return res.status(200).send({ board });
+});
+
+// editar actividad
+router.put("/updateTask", Auth, async (req, res) => {
+  // validamos usuario
+  const user = await User.findById(req.user._id);
+  if (!user) return res.status(401).send("No existe el usuario");
+  // editamos actividad
+  const board = await Board.findByIdAndUpdate(req.body._id, {
+    userId: user._id,
+    name: req.body.name,
+    status: req.body.status,
+    description: req.body.description,
+  });
+  if (!board) return res.status(401).send("no se pudo editar la actividad");
+  return res.status(200).send({ board });
+});
+
+// eliminar tarea
+router.delete("/:_id", Auth, async (req, res) => {
+  const user = await User.findById(req.user._id);
+  if (!user) return res.status(401).send("no existe el usuario");
+  const board = await Board.findByIdAndDelete(req.params._id);
+  if (!board) return res.status(401).send("no hay tarea para eliminar");
+  return res.status(200).send("Actividad eliminada");
+});
+
 // exportamos el modulo
 module.exports = router;
