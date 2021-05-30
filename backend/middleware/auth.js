@@ -1,28 +1,19 @@
-// importamos modulo jwt
 const jwt = require("jsonwebtoken");
 
-// funcion de autenticacion
-const auth = (req, res, next) => {
-  // declaramos el header de autorizacion para permisos de navegacion
+const auth = async (req, res, next) => {
   let jwtToken = req.header("Authorization");
-  // validamos si el jwt no esta, se invalida todo acceso
-  if (!jwtToken)
-    return res.status(401).send("Autorizacion rechazada: No hay token");
-  // separamos el payload jwt
+  if (!jwtToken) return res.status(401).send("Authorization denied: no token");
+
   jwtToken = jwtToken.split(" ")[1];
-  if (!jwtToken)
-    return res.status(401).send("Autorizacion rechazada: No hay token");
-  // validamos try catch
+  if (!jwtToken) return res.status(401).send("Authorization denied: no token");
+
   try {
-    // revisamos el payload
-    const payload = jwt.verify(jwtToken, "secretKey");
+    const payload = await jwt.verify(jwtToken, process.env.SECRET_kEY_JWT);
     req.user = payload;
-    next(); // procedemos al siguiente proceso
+    next();
   } catch (e) {
-    // si el token no es valido
-    res.status(401).send("Autorizacion rechazada: Token no valido");
+    res.status(401).send("Authorization denied: invalid token");
   }
 };
 
-// exportamos el modulo al backend
 module.exports = auth;
