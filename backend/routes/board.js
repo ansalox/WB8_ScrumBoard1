@@ -5,20 +5,19 @@ const Auth = require("../middleware/auth");
 const UserAuth = require("../middleware/user");
 
 router.post("/saveTask", Auth, UserAuth, async (req, res) => {
-  if (req.body.name && req.body.description) {
-    const board = new Board({
-      userId: req.user._id,
-      name: req.body.name,
-      description: req.body.description,
-      status: "to-do",
-    });
-
-    const result = await board.save();
-    if (!result) return res.status(401).send("Failed to register task");
-    return res.status(200).send({ result });
-  } else {
+  if (!req.body.name || !req.body.description)
     return res.status(401).send("Incomplete data");
-  }
+
+  const board = new Board({
+    userId: req.user._id,
+    name: req.body.name,
+    description: req.body.description,
+    status: "to-do",
+  });
+
+  const result = await board.save();
+  if (!result) return res.status(401).send("Failed to register task");
+  return res.status(200).send({ result });
 });
 
 router.get("/listTask", Auth, UserAuth, async (req, res) => {
@@ -29,22 +28,21 @@ router.get("/listTask", Auth, UserAuth, async (req, res) => {
 
 router.put("/updateTask", Auth, UserAuth, async (req, res) => {
   if (
-    req.body._id &&
-    req.body.name &&
-    req.body.status &&
-    req.body.description
-  ) {
-    const board = await Board.findByIdAndUpdate(req.body._id, {
-      userId: req.user._id,
-      name: req.body.name,
-      status: req.body.status,
-      description: req.body.description,
-    });
-    if (!board) return res.status(401).send("Error editing task");
-    return res.status(200).send({ board });
-  } else {
+    !req.body._id ||
+    !req.body.name ||
+    !req.body.status ||
+    !req.body.description
+  )
     return res.status(401).send("Incomplete data");
-  }
+
+  const board = await Board.findByIdAndUpdate(req.body._id, {
+    userId: req.user._id,
+    name: req.body.name,
+    status: req.body.status,
+    description: req.body.description,
+  });
+  if (!board) return res.status(401).send("Error editing task");
+  return res.status(200).send({ board });
 });
 
 router.delete("/:_id", Auth, UserAuth, async (req, res) => {
