@@ -22,7 +22,7 @@ router.post("/saveTask", Auth, UserAuth, async (req, res) => {
 
 router.get("/listTask", Auth, UserAuth, async (req, res) => {
   const board = await Board.find({ userId: req.user._id });
-  if (!board) return res.status(401).send("error when listing tasks");
+  if (!board) return res.status(401).send("No tasks to delete");
   return res.status(200).send({ board });
 });
 
