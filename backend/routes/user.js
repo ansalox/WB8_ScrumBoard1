@@ -42,7 +42,7 @@ router.post("/registerUser", async (req, res) => {
   }
 });
 
-router.get("/listUsers/:name?", async (req, res) => {
+router.get("/listUsers/:name?", Auth, UserAuth, Admin, async (req, res) => {
   const users = await User.find({ name: new RegExp(req.params["name"], "i") })
     .populate("roleId")
     .exec();
@@ -89,7 +89,6 @@ router.post("/registerAdmin", Auth, UserAuth, Admin, async (req, res) => {
 });
 
 router.put("/updateUser", Auth, UserAuth, Admin, async (req, res) => {
-  console.log(req.body);
   if (
     !req.body._id ||
     !req.body.name ||
@@ -121,7 +120,6 @@ router.delete("/deleteUser/:_id", Auth, UserAuth, Admin, async (req, res) => {
 });
 
 router.put("/deleteUser", Auth, UserAuth, Admin, async (req, res) => {
-  console.log(req.body);
   if (
     !req.body._id ||
     !req.body.name ||
