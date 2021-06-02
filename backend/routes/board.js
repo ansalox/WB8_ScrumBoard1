@@ -1,12 +1,13 @@
 const express = require("express");
 const router = express.Router();
+const mongoose = require("mongoose");
 const Board = require("../models/board");
 const Auth = require("../middleware/auth");
 const UserAuth = require("../middleware/user");
 
 router.post("/saveTask", Auth, UserAuth, async (req, res) => {
   if (!req.body.name || !req.body.description)
-    return res.status(401).send("Incomplete data");
+    return res.status(401).send("Process failed: Incomplete data");
 
   const board = new Board({
     userId: req.user._id,
@@ -16,13 +17,16 @@ router.post("/saveTask", Auth, UserAuth, async (req, res) => {
   });
 
   const result = await board.save();
-  if (!result) return res.status(401).send("Failed to register task");
+  if (!result)
+    return res.status(401).send("Process failed: Failed to register task");
   return res.status(200).send({ result });
 });
 
 router.get("/listTask", Auth, UserAuth, async (req, res) => {
+  const validId = mongoose.Types.ObjectId.isValid(req.user._id);
+  if (!validId) return res.status(401).send("Process failed: Invalid id");
   const board = await Board.find({ userId: req.user._id });
-  if (!board) return res.status(401).send("No tasks to delete");
+  if (!board) return res.status(401).send("Process failed: No tasks to delete");
   return res.status(200).send({ board });
 });
 
@@ -33,7 +37,10 @@ router.put("/updateTask", Auth, UserAuth, async (req, res) => {
     !req.body.status ||
     !req.body.description
   )
-    return res.status(401).send("Incomplete data");
+    return res.status(401).send("Process failed: Incomplete data");
+
+  const validId = mongoose.Types.ObjectId.isValid(req.body._id);
+  if (!validId) return res.status(401).send("Process failed: Invalid id");
 
   const board = await Board.findByIdAndUpdate(req.body._id, {
     userId: req.user._id,
@@ -41,13 +48,15 @@ router.put("/updateTask", Auth, UserAuth, async (req, res) => {
     status: req.body.status,
     description: req.body.description,
   });
-  if (!board) return res.status(401).send("Error editing task");
+  if (!board) return res.status(401).send("Process failed: Task not found");
   return res.status(200).send({ board });
 });
 
-router.delete("/:_id", Auth, UserAuth, async (req, res) => {
+router.delete("/deleteTask/:_id", Auth, UserAuth, async (req, res) => {
+  const validId = mongoose.Types.ObjectId.isValid(req.params._id);
+  if (!validId) return res.status(401).send("Process failed: Invalid id");
   const board = await Board.findByIdAndDelete(req.params._id);
-  if (!board) return res.status(401).send("Failed to delete task");
+  if (!board) return res.status(401).send("Process failed: Task not found");
   return res.status(200).send("Task deleted");
 });
 
