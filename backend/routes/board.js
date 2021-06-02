@@ -14,7 +14,7 @@ router.post(
   async (req, res) => {
     if (!req.body.name || !req.body.description)
       return res.status(401).send("Process failed: Incomplete data");
-    console.log(req.file);
+
     if (req.file) {
       if (
         req.file.mimetype !== "image/png" &&
