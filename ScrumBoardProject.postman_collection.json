@@ -780,6 +780,62 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Test 6: Img",
+			"item": [
+				{
+					"name": "http://localhost:3001/api/board/saveTaskImg",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MGI3OGVkODAzZTQ1MzE2NjQwMTc2MDIiLCJuYW1lIjoiUGVwaXRhIFBlcmxhIiwiZW1haWwiOiJwZXBpdGFAZ21haWwuY29tIiwicm9sZUlkIjoiNjBiNzg5ZDU1MmE5ZjU0ODUwMmE5NTJmIiwiaWF0IjoxNjIyNjUyOTc0fQ.zAhnBXyOBX0opRPtaQQt0w-dW4Zo5K72LrdeaWfz7QM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "asd",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "asd",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/C:/Users/Sanchez/Downloads/angular.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3001/api/board/saveTaskImg",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"board",
+								"saveTaskImg"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	]
 }
