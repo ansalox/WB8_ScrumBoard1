@@ -14,6 +14,7 @@ const Upload = require("../middleware/file");
 router.post("/saveTaskImg", mult, Upload, Auth, UserAuth, async (req, res) => {
   if (!req.body.name || !req.body.description)
     return res.status(401).send("Process failed: Incomplete data");
+
   let imageUrl = "";
   if (req.files !== undefined && req.files.image.type) {
     const url = req.protocol + "://" + req.get("host") + "/";
