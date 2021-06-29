@@ -36,12 +36,14 @@
             required
           />
         </mat-form-field>
+        <input type="file" (change)="uploadImg($event)">
       </div>
     </mat-card-content>
     <mat-card-actions>
-      <button (click)="saveTask()" class="button colorButton" mat-raised-button>
+      <!-- (click)="saveTask()"  -->
+      <button (click)="saveTaskImg()" class="button colorButton" mat-raised-button>
         Save task
-      </button>
+      </button> 
     </mat-card-actions>
   </mat-card>
 </div>

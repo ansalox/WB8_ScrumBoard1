@@ -10,10 +10,12 @@ import { Router } from '@angular/router';
 export class SaveTaskComponent implements OnInit {
   public taskData: any;
   public errorMessage: String;
+  public selectedFile: any;
 
   constructor(private boardService: BoardService, private router: Router) {
     this.taskData = {};
     this.errorMessage = '';
+    this.selectedFile = null;
   }
 
   ngOnInit(): void {}
@@ -33,6 +35,34 @@ export class SaveTaskComponent implements OnInit {
         },
         (err) => {
           console.log(err);
+          this.errorMessage = err.error;
+          this.closeAlert();
+        }
+      );
+    }
+  }
+
+  uploadImg(event: any) {
+    this.selectedFile = <File>event.target.files[0];
+  }
+
+  saveTaskImg() {
+    if (!this.taskData.name || !this.taskData.description) {
+      console.log('Failed process: Incomplete data');
+      this.errorMessage = 'Failed process: Incomplete data';
+      this.closeAlert();
+    } else {
+      const data = new FormData();
+      data.append('image', this.selectedFile, this.selectedFile.name);
+      data.append('name', this.taskData.name);
+      data.append('description', this.taskData.description);
+      this.boardService.saveTaskImg(data).subscribe(
+        (res) => {
+          console.log(res);
+          this.router.navigate(['listTask']);
+        },
+        (err) => {
+          console.log(err.error);
           this.errorMessage = err.error;
           this.closeAlert();
         }
